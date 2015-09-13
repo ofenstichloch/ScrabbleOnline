@@ -21,17 +21,31 @@ namespace Scrabble
             stream = client.GetStream();
             Thread t = new Thread(listenerLoop);
             t.Start();
-            Console.Out.Write("Namen eingebeb: ");
-            String name = Console.In.ReadLine();
-            NetMessage<String> mess2 = new NetMessage<String>(NetCommand.c_Player_NameChange, 0, name);
-            mess2.serializeTo(client.GetStream());
-            Console.Out.WriteLine("Changed Name");
-            Console.In.ReadLine();
-            NetMessage<int> mess = new NetMessage<int>(NetCommand.c_Game_Start, 0, 1);
-            mess.serializeTo(client.GetStream());
-            Console.Out.WriteLine("Started Game");
-            Console.In.ReadLine();
+            while (true)
+            {
+                Console.Out.WriteLine("Enter Command");
+                String command = Console.In.ReadLine();
+                String[] parts = command.Split(' ');
+                if (parts[0] == "Name")
+                {
+                    NetMessage<String> mess = new NetMessage<String>(NetCommand.c_Player_NameChange, 0, parts[1]);
+                    mess.serializeTo(client.GetStream());
+                }
+                else if (parts[0] == "Start")
+                {
+                    NetMessage<int> mess = new NetMessage<int>(NetCommand.c_Game_Start, 0, 1);
+                    mess.serializeTo(client.GetStream());
+                }
+                else if (parts[0] == "Move")
+                {
+                    int[] xy = new int[2];
+                    xy[0] = int.Parse(parts[2]);
+                    xy[1] = int.Parse(parts[3]);
 
+                    NetMessage<Move> move = new NetMessage<Move>(NetCommand.c_Move, 0, new Move(int.Parse(parts[1]), parts[5], xy, bool.Parse(parts[4])));
+                    move.serializeTo(client.GetStream());
+                }
+            }
         }
 
         private static void listenerLoop()
@@ -107,6 +121,7 @@ namespace Scrabble
             {
                 Object obj = netMessage.payload;
                 Board b = (Board)obj;
+                b.print();
             }
         }
 

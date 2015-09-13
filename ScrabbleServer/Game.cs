@@ -19,15 +19,21 @@ namespace Scrabble
         public Bucket bucket;
         private Thread thread;
         private int id;
+        public int currentPlayer;
 
-        Semaphore blockStart;
+        //GameFlow
+        private Semaphore blockStart;
+        public Semaphore waitForMove;
         private bool isStarted = false;
+        private bool isFinished = false;
+        public int emptyMovesCount = 0;
 
         public Game(int id)
         {
             players = new Player[4];
             playerCount = 0;
             Program.gameCount++;
+            this.id = id;
             Log.log("Game"+this.id.ToString(),"Game created (" + Program.gameCount + ")",3);
             waitingForPlayers = this;
             blockStart = new Semaphore(0, 1);
@@ -56,7 +62,23 @@ namespace Scrabble
             Log.log("Game" + id, "Waiting for Players", 4);
             blockStart.WaitOne();
             Log.log("Game" + id, "Game started with "+playerCount+" players", 4);
-            //Game logic here
+
+            while (!isFinished)
+            {
+                informPlayers<int>(new NetMessage<int>(NetCommand.s_Player_Turn, 0, currentPlayer));
+                //Wait for the move to be submitted
+                Log.log("Game" + id, "Waiting for Move " + currentPlayer, 4);
+                waitForMove.WaitOne();
+                sendBoard();
+                currentPlayer = (currentPlayer + 1) % playerCount;
+                //TODO Emptymves
+                if (emptyMovesCount == playerCount)
+                {
+                    isFinished = true;
+                }
+
+            }
+
         }
 
         internal void start()
@@ -80,12 +102,13 @@ namespace Scrabble
                         NetMessage<String[]> list = new NetMessage<string[]>(NetCommand.s_Player_List, 0, playerNames);
                         p.informPlayer<String[]>(list);
                         p.drawStones(7);
-                        p.sendBoard();
                     }
                 }
-
+                sendBoard();
                 NetMessage<int> mess = new NetMessage<int>(NetCommand.s_Game_Start, 0, 1);
                 informPlayers<int>(mess);
+                currentPlayer = 0;
+                waitForMove = new Semaphore(0, 1);
                 blockStart.Release();
  
             }
@@ -106,7 +129,13 @@ namespace Scrabble
 
         public void sendBoard()
         {
-
+            foreach (Player p in players)
+            {
+                if (p != null)
+                {
+                    p.sendBoard();
+                }
+            }
         }
         #endregion
 

@@ -47,6 +47,32 @@ namespace Scrabble
             }
         }
 
+        public Stone placeStone(int x, int y, Stone s)
+        {
+            return board[x, y].placeStone(s);
+        }
+
+        public bool checkWord(int length, int x, int y, bool horizontal)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (horizontal)
+                {
+                    if (board[x + i, y].getStone() != null && board[x + i, y].getStone().letter != ' ')
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (board[x, y+i].getStone() != null && board[x + i, y].getStone().letter != ' ')
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
         public NetMessage<Board> getMessage()
         {
             NetMessage<Board> mess = new NetMessage<Board>(NetCommand.s_Game_Board, 0, this);
@@ -59,7 +85,14 @@ namespace Scrabble
             {
                 for (int j = 0; j < 15; j++)
                 {
-                    Console.Out.Write(board[i, j].getType().ToString().Substring(0, 1)+" ");
+                    Stone s = (board[i, j].getStone());
+                    if(s == null){
+                        Console.Out.Write(". ");
+                    }
+                    else{
+                        Console.Out.Write(s.letter+" ");
+                    }
+                    
                 }
                 Console.Out.Write("\r\n");
             }

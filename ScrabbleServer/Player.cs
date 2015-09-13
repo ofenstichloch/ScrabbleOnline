@@ -20,6 +20,7 @@ namespace Scrabble
 
         public String name;
         private Hand hand;
+        private Board board;
 
         public Player(System.Net.Sockets.TcpClient socket, int id, Game game)
         {
@@ -55,6 +56,7 @@ namespace Scrabble
                 }
                 else if (typeof(NetMessage<Move>) == obj.GetType())
                 {
+                    Log.log("Player " + this.id, "Received Move", 4);
                     processMoveMessage((NetMessage<Move>)obj);
                 }
             }
@@ -68,10 +70,10 @@ namespace Scrabble
 
         internal void sendBoard()
         {
+            this.board = game.board;
             game.board.getMessage().serializeTo(stream);
         }
         #endregion
-
 
         #region Local Methods
         private void changeName(String newName){
@@ -85,6 +87,15 @@ namespace Scrabble
             hand.addStones(game.bucket.drawStones(count));
             sendHand();
         }
+
+        public bool checkHand(String s)
+        {
+            return hand.hasWord(s);
+        }
+
+#endregion
+
+        #region Process Messages
         private void processStringMessage(NetMessage<String> mess)
         {
             if (mess.commandType == NetCommand.c_Player_NameChange)
@@ -107,7 +118,63 @@ namespace Scrabble
 
         private void processMoveMessage(NetMessage<Move> mess)
         {
+            if (game.currentPlayer != this.id)
+            {
+                return;
+            }
+            Log.log("Player " + this.id, "Processing Move", 4);
+            //get Move
+            Move m = mess.payload;
+            if (m.getType() == 0)
+            {
+                game.emptyMovesCount++;
+            }
+            else if (m.getType() == 2)
+            {
+                //TODO exchange Stone
+            }
+            else
+            {
+                //Apply move in game
+                if (hand.hasWord(m.getWord()))
+                {
+                    String word = m.getWord();
 
+                    if (!board.checkWord(m.getLength(), m.getX(), m.getY(), m.isHorizontal()))
+                    {
+                        Log.log("Player " + this.id, "Move not allowed", 4);
+                        //TODO Reply error to client
+                        return;
+                    }
+                    for (int i = 0; i < m.getLength(); i++)
+                    {
+                        if (m.isHorizontal())
+                        {
+                            Stone ret = board.placeStone(m.getX() + i, m.getY(), hand.removeStone(word[i]));
+                            if (ret != null)
+                            {
+                                Stone[] giveBack = new Stone[1];
+                                giveBack[0] = ret;
+                                hand.addStones(giveBack);
+                            }
+                        }
+                        else
+                        {
+                            Stone ret = board.placeStone(m.getX(), m.getY()+i, hand.removeStone(word[i]));
+                            if (ret != null)
+                            {
+                                Stone[] giveBack = new Stone[1];
+                                giveBack[0] = ret;
+                                hand.addStones(giveBack);
+                            }
+                        }
+                    }
+                    drawStones(m.getLength());
+                    Log.log("Player " + this.id, "Processed Move, releasing game", 4);
+                    game.waitForMove.Release();
+                }
+            }
+            
         }
         #endregion
     }
