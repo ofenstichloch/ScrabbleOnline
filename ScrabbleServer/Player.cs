@@ -19,6 +19,7 @@ namespace Scrabble
         private int id;
 
         public String name;
+        private Hand hand;
 
         public Player(System.Net.Sockets.TcpClient socket, int id, Game game)
         {
@@ -29,7 +30,7 @@ namespace Scrabble
             this.writer = new StreamWriter(stream);
             this.reader = new StreamReader(stream);
             this.name = "Player" + id;
-            
+            hand = new Hand();
         }
 
         #region Network Methods
@@ -61,14 +62,17 @@ namespace Scrabble
 
         internal void sendHand()
         {
-
+            NetMessage<Hand> mess = new NetMessage<Hand>(NetCommand.s_Player_Hand, this.id, hand);
+            mess.serializeTo(stream);
         }
 
         internal void sendBoard()
         {
-
+            game.board.getMessage().serializeTo(stream);
         }
         #endregion
+
+
         #region Local Methods
         private void changeName(String newName){
             this.name = newName;
@@ -76,6 +80,11 @@ namespace Scrabble
             game.informPlayers<String>(message);
         }
 
+        public void drawStones(int count)
+        {
+            hand.addStones(game.bucket.drawStones(count));
+            sendHand();
+        }
         private void processStringMessage(NetMessage<String> mess)
         {
             if (mess.commandType == NetCommand.c_Player_NameChange)
@@ -89,6 +98,10 @@ namespace Scrabble
             if (mess.commandType == NetCommand.c_Game_Start)
             {
                 game.start();
+            }
+            else if (mess.commandType == NetCommand.c_DrawStones)
+            {
+                drawStones(mess.payload);
             }
         }
 

@@ -12,22 +12,23 @@ namespace Scrabble
     {
         public static Game waitingForPlayers;
 
-        private Player[] players;
-        private int playerCount;
+        public Player[] players;
+        public int playerCount;
 
-        private Board board;
-        private Bucket bucket;
+        public Board board;
+        public Bucket bucket;
         private Thread thread;
+        private int id;
 
         Semaphore blockStart;
         private bool isStarted = false;
 
-        public Game()
+        public Game(int id)
         {
             players = new Player[4];
             playerCount = 0;
             Program.gameCount++;
-            Console.Out.WriteLine("Game created (" + Program.gameCount + ")");
+            Log.log("Game"+this.id.ToString(),"Game created (" + Program.gameCount + ")",3);
             waitingForPlayers = this;
             blockStart = new Semaphore(0, 1);
             Thread t = new Thread(this.gameLoop);
@@ -47,15 +48,15 @@ namespace Scrabble
             if (playerCount == 4)
             {
                 Game.waitingForPlayers = null;
-                start();
             }
         }
 
         internal void gameLoop()
         {
-            Console.Out.WriteLine("Waiting for players");
+            Log.log("Game" + id, "Waiting for Players", 4);
             blockStart.WaitOne();
-            Console.Out.WriteLine("Game started with players: "+players[0].name);
+            Log.log("Game" + id, "Game started with "+playerCount+" players", 4);
+            //Game logic here
         }
 
         internal void start()
@@ -64,24 +65,29 @@ namespace Scrabble
             {
                 this.board = new Board();
                 this.bucket = new Bucket();
-                board.print();
                 waitingForPlayers = null;
                 isStarted = true;
+                String[] playerNames = new String[playerCount];
+                for (int i = 0; i < playerCount; i++)
+                {
+                    playerNames[i] = players[i].name;
+                }
+                
                 foreach (Player p in players)
                 {
                     if (p != null)
                     {
-                        //Send playerlist
-                        //Draw stones
+                        NetMessage<String[]> list = new NetMessage<string[]>(NetCommand.s_Player_List, 0, playerNames);
+                        p.informPlayer<String[]>(list);
+                        p.drawStones(7);
                         p.sendBoard();
-                        p.sendHand();
                     }
                 }
 
                 NetMessage<int> mess = new NetMessage<int>(NetCommand.s_Game_Start, 0, 1);
                 informPlayers<int>(mess);
                 blockStart.Release();
-                //Send whos turn it is
+ 
             }
         }
 

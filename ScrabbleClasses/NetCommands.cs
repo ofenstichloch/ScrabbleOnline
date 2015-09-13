@@ -11,9 +11,13 @@ namespace Scrabble
         public static int s_Player_Connected = 100;
         public static int s_Player_NameChange = 101;
         public static int s_Player_Hand = 102;
+        public static int s_Player_List = 103;
         public static int s_Game_Start = 10;
+        public static int s_Game_Board = 11;
+        
 
-        public static int c_Player_NameChange = 1001;
         public static int c_Game_Start = 1000;
+        public static int c_Player_NameChange = 1001;
+        public static int c_DrawStones = 1002;
     }
 }

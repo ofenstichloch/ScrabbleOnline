@@ -47,13 +47,19 @@ namespace Scrabble
             }
         }
 
+        public NetMessage<Board> getMessage()
+        {
+            NetMessage<Board> mess = new NetMessage<Board>(NetCommand.s_Game_Board, 0, this);
+            return mess;
+        }
+
         public void print()
         {
             for (int i = 0; i < 15; i++)
             {
                 for (int j = 0; j < 15; j++)
                 {
-                    Console.Out.Write(board[i, j].getType().ToString().Substring(0, 1));
+                    Console.Out.Write(board[i, j].getType().ToString().Substring(0, 1)+" ");
                 }
                 Console.Out.Write("\r\n");
             }

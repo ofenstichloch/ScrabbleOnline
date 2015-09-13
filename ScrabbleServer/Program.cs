@@ -26,11 +26,11 @@ namespace Scrabble
                 //ToDo: Implement Client Queue
                 TcpClient client = loginServer.AcceptTcpClient();
                 Program.clientCount++;
-                Console.Out.WriteLine("Client connected ("+Program.clientCount+")");
+                Log.log("Master", "Client connected (" + clientCount + ")", 4);
                 Game g = Game.waitingForPlayers;
                 if (g == null)
                 {
-                    g = new Game();
+                    g = new Game(gameCount);
                 }
                 g.connectPlayer(client);
             }

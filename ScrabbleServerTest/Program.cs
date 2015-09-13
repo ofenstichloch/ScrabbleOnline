@@ -21,12 +21,15 @@ namespace Scrabble
             stream = client.GetStream();
             Thread t = new Thread(listenerLoop);
             t.Start();
-            Console.In.ReadLine();
-            NetMessage<String> mess2 = new NetMessage<String>(NetCommand.c_Player_NameChange, 0, "Alex");
+            Console.Out.Write("Namen eingebeb: ");
+            String name = Console.In.ReadLine();
+            NetMessage<String> mess2 = new NetMessage<String>(NetCommand.c_Player_NameChange, 0, name);
             mess2.serializeTo(client.GetStream());
             Console.Out.WriteLine("Changed Name");
+            Console.In.ReadLine();
             NetMessage<int> mess = new NetMessage<int>(NetCommand.c_Game_Start, 0, 1);
             mess.serializeTo(client.GetStream());
+            Console.Out.WriteLine("Started Game");
             Console.In.ReadLine();
 
         }
@@ -48,17 +51,27 @@ namespace Scrabble
                 else if (typeof(NetMessage<Move>) == obj.GetType())
                 {
                     processMessage<Move>((NetMessage<Move>)obj);
+                }else if(typeof(NetMessage<String[]>)== obj.GetType()){
+                    processMessage<String[]>((NetMessage<String[]>)obj);
+                }
+                else if (typeof(NetMessage<Board>) == obj.GetType())
+                {
+                    processMessage<Board>((NetMessage<Board>)obj);
+                }
+                else if (typeof(NetMessage<Hand>) == obj.GetType())
+                {
+                    processMessage<Hand>((NetMessage<Hand>)obj);
                 }
             }
         }
 
         private static void processMessage<T>(NetMessage<T> netMessage)
         {
-            if (typeof(NetMessage<int>) == netMessage.GetType())
+            if (typeof(T) == typeof(int))
             {
 
             }
-            else if (typeof(NetMessage<String>) == netMessage.GetType())
+            else if (typeof(String) == typeof(T))
             {
                 if (netMessage.commandType == NetCommand.s_Player_Connected)
                 {
@@ -69,9 +82,31 @@ namespace Scrabble
                     Console.Out.WriteLine("Player " + netMessage.payload + " changed the name");
                 }
             }
-            else if (typeof(NetMessage<Move>) == netMessage.GetType())
+            else if (typeof(Move) == typeof(T))
             {
 
+            }
+            else if (typeof(Hand)==typeof(T))
+            {
+                Console.Out.WriteLine("Received Hand");
+                Object obj = netMessage.payload;
+                Hand h = (Hand)obj;
+                h.print();
+            }
+            else if (typeof(String[]) == typeof(T))
+            {
+                Object obj = netMessage.payload;
+                String[] s = (String[])obj;
+                foreach (String st in s)
+                {
+                    Console.Out.Write(st + " ");
+                }
+                Console.Out.WriteLine();
+            }
+            else if (typeof(Board) == typeof(T))
+            {
+                Object obj = netMessage.payload;
+                Board b = (Board)obj;
             }
         }
 

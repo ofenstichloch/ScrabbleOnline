@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Scrabble
 {
+    [Serializable]
     class Field
     {
         public enum Types { Normal, DoubleLetter, TripleLetter, DoubleWord, TripleWord };
