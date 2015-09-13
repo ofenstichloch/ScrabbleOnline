@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="Bucket.cs" />
+    <Compile Include="Field.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="NetCommands.cs" />
     <Compile Include="NetMessage.cs" />

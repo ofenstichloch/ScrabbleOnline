@@ -19,6 +19,7 @@ namespace Scrabble
             this.commandType = type;
             this.origin = origin;
             if (!typeof(T).IsSerializable) {
+                Console.Out.WriteLine(typeof(T) + " is not Serializable");
                 throw new NotSupportedException();
             }
             this.payload = data;

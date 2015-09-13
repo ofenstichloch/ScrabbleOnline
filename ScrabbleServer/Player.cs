@@ -33,8 +33,8 @@ namespace Scrabble
         }
 
         #region Network Methods
-        internal void informPlayer(NetMessage<String> message){
-            writer.WriteLine(message);
+        internal void informPlayer<T>(NetMessage<T> message){
+            message.serializeTo(stream);
         }
 
 
@@ -73,20 +73,23 @@ namespace Scrabble
         private void changeName(String newName){
             this.name = newName;
             NetMessage<String> message = new NetMessage<String>(NetCommand.s_Player_NameChange, this.id, newName);
-            game.informPlayers(message);
+            game.informPlayers<String>(message);
         }
 
         private void processStringMessage(NetMessage<String> mess)
         {
-            if (mess.payload == "Start")
+            if (mess.commandType == NetCommand.c_Player_NameChange)
             {
-                game.start();
+                changeName(mess.payload);
             }
         }
 
         private void processIntMessage(NetMessage<int> mess)
         {
-
+            if (mess.commandType == NetCommand.c_Game_Start)
+            {
+                game.start();
+            }
         }
 
         private void processMoveMessage(NetMessage<Move> mess)
