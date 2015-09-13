@@ -132,6 +132,13 @@ namespace Scrabble
             else if (m.getType() == 2)
             {
                 //TODO exchange Stone
+                if (m.getLength() > 2)
+                {
+                    Log.log("Player " + this.id, "Cannot exchange more than 2 stones", 3);
+                    return;
+                }
+                hand.exchangeStones(m.getWord(), game.bucket);
+                drawStones(m.getLength());
             }
             else
             {
@@ -142,7 +149,7 @@ namespace Scrabble
 
                     if (!board.checkWord(m.getLength(), m.getX(), m.getY(), m.isHorizontal()))
                     {
-                        Log.log("Player " + this.id, "Move not allowed", 4);
+                        Log.log("Player " + this.id, "Board blocked Move", 3);
                         //TODO Reply error to client
                         return;
                     }
@@ -150,7 +157,7 @@ namespace Scrabble
                     {
                         if (m.isHorizontal())
                         {
-                            Stone ret = board.placeStone(m.getX() + i, m.getY(), hand.removeStone(word[i]));
+                            Stone ret = board.placeStone(m.getX() , m.getY()+i, hand.removeStone(word[i]));
                             if (ret != null)
                             {
                                 Stone[] giveBack = new Stone[1];
@@ -160,7 +167,7 @@ namespace Scrabble
                         }
                         else
                         {
-                            Stone ret = board.placeStone(m.getX(), m.getY()+i, hand.removeStone(word[i]));
+                            Stone ret = board.placeStone(m.getX()+i, m.getY(), hand.removeStone(word[i]));
                             if (ret != null)
                             {
                                 Stone[] giveBack = new Stone[1];
@@ -169,7 +176,7 @@ namespace Scrabble
                             }
                         }
                     }
-                    drawStones(m.getLength());
+                    drawStones(7-hand.getLength());
                     Log.log("Player " + this.id, "Processed Move, releasing game", 4);
                     game.waitForMove.Release();
                 }

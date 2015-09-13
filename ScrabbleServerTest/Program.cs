@@ -41,7 +41,7 @@ namespace Scrabble
                     int[] xy = new int[2];
                     xy[0] = int.Parse(parts[2]);
                     xy[1] = int.Parse(parts[3]);
-
+                    parts[5] = parts[5].Replace('_', ' ');
                     NetMessage<Move> move = new NetMessage<Move>(NetCommand.c_Move, 0, new Move(int.Parse(parts[1]), parts[5], xy, bool.Parse(parts[4])));
                     move.serializeTo(client.GetStream());
                 }

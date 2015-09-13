@@ -29,6 +29,17 @@ namespace Scrabble
             return ret;
         }
 
+        public void exchangeStones(string w, Bucket bucket)
+        {
+            foreach (char c in w)
+            {
+                Stone ret = hand.Find(delegate(Stone s) { return s.letter == c; });
+                hand.Remove(ret);
+                bucket.addStone(ret);
+            }
+      
+        }
+
         public bool hasWord(String s)
         {
             for (int i = 0; i < s.Length; i++)
@@ -40,6 +51,11 @@ namespace Scrabble
             }
                 Log.log("hand","ok word",4);
                 return true;
+        }
+
+        public int getLength()
+        {
+            return hand.Count();
         }
 
         public void print()

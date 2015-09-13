@@ -34,6 +34,12 @@ namespace Scrabble
             
         }
 
+        public void addStone(Stone s)
+        {
+            content.Push(s);
+            shuffle();
+        }
+
         public Stone[] drawStones(int count){
             Stone[] ret = new Stone[count];
             for (int i = 0; i < count; i++)
