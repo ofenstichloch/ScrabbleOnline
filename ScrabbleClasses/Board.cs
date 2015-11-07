@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scrabble
+namespace ScrabbleClasses
 {
     [Serializable]
     public class Board
@@ -97,5 +97,24 @@ namespace Scrabble
                 Console.Out.Write("\r\n");
             }
         }
+
+        public int getWidth()
+        {
+            return board.GetLength(0);
+        }
+
+        public int getHeight()
+        {
+            return board.GetLength(1);
+        }
+
+        public Field getField(int x, int y)
+        {
+            Field f = board[x, y];
+            Field r = new Field(f.getType());
+            r.placeStone(f.getStone());
+            return r;
+        }
+
     }
 }

@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using ScrabbleClasses;
 
-namespace Scrabble
+
+namespace ScrabbleServerTest
 {
     class Program
     {
         private static NetworkStream stream;
+        private static Form_Board fBoard;
         static void Main(string[] args)
         {
             Console.In.ReadLine();
@@ -21,6 +24,9 @@ namespace Scrabble
             stream = client.GetStream();
             Thread t = new Thread(listenerLoop);
             t.Start();
+
+            fBoard = Form_Board.Create();
+            Console.Out.WriteLine("Form initialized");
             while (true)
             {
                 Console.Out.WriteLine("Enter Command");
@@ -121,6 +127,7 @@ namespace Scrabble
             {
                 Object obj = netMessage.payload;
                 Board b = (Board)obj;
+                fBoard.refreshBoard(b);
                 b.print();
             }
         }

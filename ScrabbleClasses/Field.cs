@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scrabble
+namespace ScrabbleClasses
 {
     [Serializable]
-    class Field
+    public class Field
     {
         public enum Types { Normal, DoubleLetter, TripleLetter, DoubleWord, TripleWord };
         private Types type;

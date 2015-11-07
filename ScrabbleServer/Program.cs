@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
+using ScrabbleClasses;
 
-namespace Scrabble
+namespace ScrabbleServer
 {
     /*
      * Main class

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using ScrabbleClasses;
 
-namespace Scrabble
+namespace ScrabbleServer
 {
     class Player
     {

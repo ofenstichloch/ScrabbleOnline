@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scrabble
+namespace ScrabbleClasses
 {
     public class NetCommand
     {

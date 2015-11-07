@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace Scrabble
+namespace ScrabbleClasses
 {
     [Serializable]
     public class NetMessage<T>
