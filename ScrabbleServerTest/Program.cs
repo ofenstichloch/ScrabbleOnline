@@ -111,7 +111,8 @@ namespace ScrabbleServerTest
                 Console.Out.WriteLine("Received Hand");
                 Object obj = netMessage.payload;
                 Hand h = (Hand)obj;
-                h.print();
+                fBoard.refreshHand(h);
+               // h.print();
             }
             else if (typeof(String[]) == typeof(T))
             {
@@ -128,7 +129,7 @@ namespace ScrabbleServerTest
                 Object obj = netMessage.payload;
                 Board b = (Board)obj;
                 fBoard.refreshBoard(b);
-                b.print();
+                //b.print();
             }
         }
 

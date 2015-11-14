@@ -40,6 +40,10 @@ namespace ScrabbleClasses
       
         }
 
+        /*
+         * TODO
+         * Mind blanks on check 
+         */
         public bool hasWord(String s)
         {
             for (int i = 0; i < s.Length; i++)
@@ -66,6 +70,11 @@ namespace ScrabbleClasses
              
             }
             Console.Out.WriteLine();
+        }
+
+        public List<Stone> getStones()
+        {
+            return hand;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace ScrabbleServerTest
     public partial class Form_Board : Form
     {
         delegate void refreshBoardDelegate(Board b);
+        delegate void refreshHandDelegate(Hand h);
         bool created = false;
         public Form_Board()
         {
@@ -37,6 +38,30 @@ namespace ScrabbleServerTest
 
         }
 
+
+        public void refreshHand(Hand h)
+        {
+            if (tblHand.InvokeRequired)
+            {
+                refreshHandDelegate r = new refreshHandDelegate(refreshHand);
+                this.Invoke(r, new object[] { h });
+            }
+            else
+            {
+                tblHand.SuspendLayout();
+                int i = 0;
+                foreach (Stone s in h.getStones())
+                {
+                    ((Button)tblHand.GetControlFromPosition(i, 0)).Text = s.letter + "(" + s.value + ")";
+                    i++;
+                }
+            }
+        }
+
+        /*
+         * TODO
+         * Refactor colors, add them to Field.Types
+         * */
         public void refreshBoard(Board b)
         {
             if (tblBoard.InvokeRequired)
