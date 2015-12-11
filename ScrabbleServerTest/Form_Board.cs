@@ -15,6 +15,7 @@ namespace ScrabbleServerTest
     {
         delegate void refreshBoardDelegate(Board b);
         delegate void refreshHandDelegate(Hand h);
+        delegate void logDelegate(string s);
         bool created = false;
         public Form_Board()
         {
@@ -150,6 +151,19 @@ namespace ScrabbleServerTest
             }
                 
             
+        }
+
+        internal void log(string p)
+        {
+            if (tblHand.InvokeRequired)
+            {
+                logDelegate r = new logDelegate(log);
+                this.Invoke(r, new object[] { p });
+            }
+            else
+            {
+                lbStats.Text += p + "\n\r";
+            }
         }
     }
 }

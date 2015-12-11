@@ -16,3 +16,11 @@ C:\Users\alex\Documents\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClie
 C:\Users\alex\Documents\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.csproj.GenerateResource.Cache
 C:\Users\alex\Documents\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.exe
 C:\Users\alex\Documents\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.pdb
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\bin\Debug\ScrabbleClient.exe.config
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\bin\Debug\ScrabbleClient.exe
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\bin\Debug\ScrabbleClient.pdb
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.csprojResolveAssemblyReference.cache
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.Properties.Resources.resources
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.csproj.GenerateResource.Cache
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.exe
+C:\Users\alex\Documents\Git\ScrabbleOnline\ScrabbleClient\obj\x86\Debug\ScrabbleClient.pdb

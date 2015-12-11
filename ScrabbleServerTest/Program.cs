@@ -18,6 +18,8 @@ namespace ScrabbleServerTest
         static void Main(string[] args)
         {
             Console.In.ReadLine();
+            fBoard = Form_Board.Create();
+            Console.Out.WriteLine("Form initialized");
             TcpClient client = new TcpClient();
             client.Connect("localhost", 42420);
             Console.Out.WriteLine("Connected");
@@ -25,8 +27,7 @@ namespace ScrabbleServerTest
             Thread t = new Thread(listenerLoop);
             t.Start();
 
-            fBoard = Form_Board.Create();
-            Console.Out.WriteLine("Form initialized");
+            
             while (true)
             {
                 Console.Out.WriteLine("Enter Command");
@@ -96,10 +97,12 @@ namespace ScrabbleServerTest
                 if (netMessage.commandType == NetCommand.s_Player_Connected)
                 {
                     Console.Out.WriteLine("Player " + netMessage.payload + " joined your game!");
+                    fBoard.log("Player " + netMessage.payload + " joined your game!");
                 }
                 else if (netMessage.commandType == NetCommand.s_Player_NameChange)
                 {
                     Console.Out.WriteLine("Player " + netMessage.payload + " changed the name");
+                    fBoard.log("Player " + netMessage.payload + " changed the name!");
                 }
             }
             else if (typeof(Move) == typeof(T))
