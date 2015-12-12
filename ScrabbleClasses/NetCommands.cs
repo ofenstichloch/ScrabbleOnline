@@ -14,6 +14,7 @@ namespace ScrabbleClasses
         public static int s_Player_Hand = 102;
         public static int s_Player_List = 103;
         public static int s_Player_Turn = 104;
+        public static int s_Player_id = 105;
         public static int s_Game_Start = 10;
         public static int s_Game_Board = 11;
         

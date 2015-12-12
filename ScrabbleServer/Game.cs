@@ -50,7 +50,7 @@ namespace ScrabbleServer
             playerCount++;
             Thread t = new Thread(newPlayer.listenForCommands);
             t.Start();
-            NetMessage<String> mess = new NetMessage<string>(NetCommand.s_Player_Connected,0,newPlayer.name);
+            NetMessage<String> mess = new NetMessage<string>(NetCommand.s_Player_Connected,playerCount,newPlayer.name);
             informPlayers<String>(mess);
             if (playerCount == 4)
             {

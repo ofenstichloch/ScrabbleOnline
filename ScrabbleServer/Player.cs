@@ -32,6 +32,7 @@ namespace ScrabbleServer
             this.writer = new StreamWriter(stream);
             this.reader = new StreamReader(stream);
             this.name = "Player" + id;
+            new NetMessage<int>(NetCommand.s_Player_id, id, id).serializeTo(stream);
             hand = new Hand();
         }
 

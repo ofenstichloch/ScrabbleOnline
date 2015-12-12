@@ -16,6 +16,7 @@ namespace ScrabbleServerTest
         delegate void refreshBoardDelegate(Board b);
         delegate void refreshHandDelegate(Hand h);
         delegate void logDelegate(string s);
+        private Client c;
         bool created = false;
         public Form_Board()
         {
@@ -27,9 +28,10 @@ namespace ScrabbleServerTest
             Application.Run((Form)state);
         }
 
-        public static Form_Board Create()
+        public static Form_Board Create(Client c)
         {
             Form_Board f = new Form_Board();
+            f.c = c;
             Thread t = new Thread(Main);
             t.Start(f);
             return f;
@@ -163,6 +165,24 @@ namespace ScrabbleServerTest
             else
             {
                 lbStats.Text += p + "\n\r";
+            }
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void connectToServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            c.connect();
+        }
+
+        private void startGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (c.isConnected())
+            {
+                c.startGame();
             }
         }
     }
