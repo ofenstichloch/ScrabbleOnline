@@ -27,28 +27,37 @@ namespace ScrabbleServerTest
             BinaryFormatter b = new BinaryFormatter();
             while (true)
             {
-                Object obj = b.Deserialize(stream);
-                if (typeof(NetMessage<int>) == obj.GetType())
+                if (connected)
                 {
-                    processMessage<int>((NetMessage<int>)obj);
+                    try {
+                    Object obj = b.Deserialize(stream);
+                    if (typeof(NetMessage<int>) == obj.GetType())
+                    {
+                        processMessage<int>((NetMessage<int>)obj);
+                    }
+                    else if (typeof(NetMessage<String>) == obj.GetType())
+                    {
+                        processMessage<String>((NetMessage<String>)obj);
+                    }
+                    else if (typeof(NetMessage<Move>) == obj.GetType())
+                    {
+                        processMessage<Move>((NetMessage<Move>)obj);
+                    }
+                    else if (typeof(NetMessage<String[]>) == obj.GetType())
+                    {
+                        processMessage<String[]>((NetMessage<String[]>)obj);
+                    }
+                    else if (typeof(NetMessage<Board>) == obj.GetType())
+                    {
+                        processMessage<Board>((NetMessage<Board>)obj);
+                    }
+                    else if (typeof(NetMessage<Hand>) == obj.GetType())
+                    {
+                        processMessage<Hand>((NetMessage<Hand>)obj);
+                    }
+                }catch(InvalidOperationException e){
+
                 }
-                else if (typeof(NetMessage<String>) == obj.GetType())
-                {
-                    processMessage<String>((NetMessage<String>)obj);
-                }
-                else if (typeof(NetMessage<Move>) == obj.GetType())
-                {
-                    processMessage<Move>((NetMessage<Move>)obj);
-                }else if(typeof(NetMessage<String[]>)== obj.GetType()){
-                    processMessage<String[]>((NetMessage<String[]>)obj);
-                }
-                else if (typeof(NetMessage<Board>) == obj.GetType())
-                {
-                    processMessage<Board>((NetMessage<Board>)obj);
-                }
-                else if (typeof(NetMessage<Hand>) == obj.GetType())
-                {
-                    processMessage<Hand>((NetMessage<Hand>)obj);
                 }
             }
         }
@@ -128,6 +137,12 @@ namespace ScrabbleServerTest
                 this.connected = false;
                 return false;
             }
+        }
+
+        public void disconnect()
+        {
+            connected = false;
+
         }
 
         public void startGame()

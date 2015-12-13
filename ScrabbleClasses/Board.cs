@@ -116,5 +116,10 @@ namespace ScrabbleClasses
             return r;
         }
 
+        public Stone removeStone(int x, int y)
+        {
+            return board[x, y].removeStone();
+        }
+
     }
 }

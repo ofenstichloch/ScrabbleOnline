@@ -17,12 +17,16 @@ namespace ScrabbleServerTest
         delegate void refreshHandDelegate(Hand h);
         delegate void logDelegate(string s);
         private Client c;
+        private Hand hand;
+        private Board board;
+        static private Thread formThread;
+
         bool created = false;
         public Form_Board()
         {
             InitializeComponent();
         }
-
+        [STAThread]
         static void Main(object state)
         {
             Application.Run((Form)state);
@@ -32,8 +36,9 @@ namespace ScrabbleServerTest
         {
             Form_Board f = new Form_Board();
             f.c = c;
-            Thread t = new Thread(Main);
-            t.Start(f);
+            Form_Board.formThread = new Thread(Main);
+            Form_Board.formThread.SetApartmentState(ApartmentState.STA);
+            Form_Board.formThread.Start(f);
             return f;
         }
         private void Form_Board_Load(object sender, EventArgs e)
@@ -56,8 +61,16 @@ namespace ScrabbleServerTest
                 foreach (Stone s in h.getStones())
                 {
                     ((Button)tblHand.GetControlFromPosition(i, 0)).Text = s.letter + "(" + s.value + ")";
+                    ((Button)tblHand.GetControlFromPosition(i, 0)).Enabled = true;
                     i++;
                 }
+                while (i < 7)
+                {
+                    ((Button)tblHand.GetControlFromPosition(i, 0)).Enabled = false;
+                    ((Button)tblHand.GetControlFromPosition(i, 0)).Text = "";
+                    i++;
+                }
+                hand = h;
             }
         }
 
@@ -87,7 +100,12 @@ namespace ScrabbleServerTest
                             Field f = b.getField(i, j);
                             Stone s = f.getStone();
                             t.Dock = DockStyle.Fill;
+                            t.AutoSize = false;
                             t.Font = new Font("Arial", 20);
+                            t.AllowDrop = true;
+                            t.DragDrop += new System.Windows.Forms.DragEventHandler(this.tblBoard_DragDrop);
+                            t.DragEnter += new System.Windows.Forms.DragEventHandler(this.tblBoard_DragEnter);
+                            t.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tblBoad_Click);
                             switch (f.getType())
                             {
                                 case Field.Types.DoubleLetter:
@@ -109,6 +127,10 @@ namespace ScrabbleServerTest
                             if (s != null)
                             {
                                 t.Text = s.letter + "(" + s.value + ")";
+                            }
+                            else
+                            {
+                                t.Text = "";
                             }
                             tblBoard.Controls.Add(t, i, j);
                         }
@@ -146,10 +168,15 @@ namespace ScrabbleServerTest
                             {
                                 ((Label)tblBoard.GetControlFromPosition(i, j)).Text = s.letter + "(" + s.value + ")";
                             }
+                            else
+                            {
+                                ((Label)tblBoard.GetControlFromPosition(i, j)).Text ="";
+                            }
                         }
                     }
                     tblBoard.ResumeLayout();
                 }
+                board = b;
             }
                 
             
@@ -170,7 +197,8 @@ namespace ScrabbleServerTest
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            c.disconnect();
+            Application.Exit();
         }
 
         private void connectToServerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -185,5 +213,60 @@ namespace ScrabbleServerTest
                 c.startGame();
             }
         }
+
+        private void changeNameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btStone_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (sender.GetType() != typeof(Button)) { return; }
+            ((Button)sender).DoDragDrop(hand.getStones()[int.Parse(((Button)sender).Tag.ToString())-1],DragDropEffects.Move);
+        }
+
+        private void Form_Board_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            c.disconnect();
+        }
+
+        private void tblBoard_DragDrop(object sender, DragEventArgs e)
+        {
+            Stone s = (Stone)e.Data.GetData(typeof(Stone));
+            TableLayoutPanelCellPosition pos = tblBoard.GetCellPosition((Label)sender);
+            board.placeStone(pos.Column, pos.Row,s) ;
+            hand.removeStone(s.letter);
+            refreshHand(hand);
+            refreshBoard(board);
+        }
+
+        private void tblBoad_Click(object sender, MouseEventArgs e)
+        {
+            TableLayoutPanelCellPosition pos = tblBoard.GetCellPosition((Label)sender);
+            if (board.getField(pos.Column, pos.Row).getStone() == null)
+            {
+                return;
+            }
+            hand.addStones(new Stone[] {board.removeStone(pos.Column, pos.Row)});
+            refreshHand(hand);
+            refreshBoard(board);
+        }
+
+        private void tblBoard_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void btSubmit_Click(object sender, EventArgs e)
+        {
+            //Recognize word, start position and orientation
+            int startx=0, starty=0, length = 0;
+            bool horizontal;
+
+
+            //send to server
+        }
+
+ 
     }
 }

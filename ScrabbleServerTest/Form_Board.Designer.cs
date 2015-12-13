@@ -44,12 +44,14 @@
             this.changeNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btSubmit = new System.Windows.Forms.Button();
             this.tblHand.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblBoard
             // 
+            this.tblBoard.AllowDrop = true;
             this.tblBoard.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tblBoard.ColumnCount = 15;
             this.tblBoard.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6.666667F));
@@ -93,7 +95,7 @@
             // tblHand
             // 
             this.tblHand.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tblHand.ColumnCount = 8;
+            this.tblHand.ColumnCount = 9;
             this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
@@ -101,7 +103,8 @@
             this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51F));
+            this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
+            this.tblHand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tblHand.Controls.Add(this.btStone7, 6, 0);
             this.tblHand.Controls.Add(this.btStone6, 5, 0);
             this.tblHand.Controls.Add(this.btStone5, 4, 0);
@@ -110,6 +113,7 @@
             this.tblHand.Controls.Add(this.btStone2, 1, 0);
             this.tblHand.Controls.Add(this.btStone1, 0, 0);
             this.tblHand.Controls.Add(this.lbStats, 7, 0);
+            this.tblHand.Controls.Add(this.btSubmit, 8, 0);
             this.tblHand.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tblHand.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
             this.tblHand.Location = new System.Drawing.Point(0, 774);
@@ -121,66 +125,87 @@
             // 
             // btStone7
             // 
+            this.btStone7.Enabled = false;
             this.btStone7.Location = new System.Drawing.Point(544, 4);
             this.btStone7.Name = "btStone7";
             this.btStone7.Size = new System.Drawing.Size(83, 47);
             this.btStone7.TabIndex = 6;
+            this.btStone7.Tag = "7";
             this.btStone7.Text = "Stone 7";
             this.btStone7.UseVisualStyleBackColor = true;
+            this.btStone7.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
             // btStone6
             // 
+            this.btStone6.Enabled = false;
             this.btStone6.Location = new System.Drawing.Point(454, 4);
             this.btStone6.Name = "btStone6";
             this.btStone6.Size = new System.Drawing.Size(83, 47);
             this.btStone6.TabIndex = 5;
+            this.btStone6.Tag = "6";
             this.btStone6.Text = "Stone 6";
             this.btStone6.UseVisualStyleBackColor = true;
+            this.btStone6.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
             // btStone5
             // 
+            this.btStone5.Enabled = false;
             this.btStone5.Location = new System.Drawing.Point(364, 4);
             this.btStone5.Name = "btStone5";
             this.btStone5.Size = new System.Drawing.Size(83, 47);
             this.btStone5.TabIndex = 4;
+            this.btStone5.Tag = "5";
             this.btStone5.Text = "Stone 5";
             this.btStone5.UseVisualStyleBackColor = true;
+            this.btStone5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
             // btStone4
             // 
+            this.btStone4.Enabled = false;
             this.btStone4.Location = new System.Drawing.Point(274, 4);
             this.btStone4.Name = "btStone4";
             this.btStone4.Size = new System.Drawing.Size(83, 47);
             this.btStone4.TabIndex = 3;
+            this.btStone4.Tag = "4";
             this.btStone4.Text = "Stone 4";
             this.btStone4.UseVisualStyleBackColor = true;
+            this.btStone4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
             // btStone3
             // 
+            this.btStone3.Enabled = false;
             this.btStone3.Location = new System.Drawing.Point(184, 4);
             this.btStone3.Name = "btStone3";
             this.btStone3.Size = new System.Drawing.Size(83, 47);
             this.btStone3.TabIndex = 2;
+            this.btStone3.Tag = "3";
             this.btStone3.Text = "Stone 3";
             this.btStone3.UseVisualStyleBackColor = true;
+            this.btStone3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
             // btStone2
             // 
+            this.btStone2.Enabled = false;
             this.btStone2.Location = new System.Drawing.Point(94, 4);
             this.btStone2.Name = "btStone2";
             this.btStone2.Size = new System.Drawing.Size(83, 47);
             this.btStone2.TabIndex = 1;
+            this.btStone2.Tag = "2";
             this.btStone2.Text = "Stone 2";
             this.btStone2.UseVisualStyleBackColor = true;
+            this.btStone2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
             // btStone1
             // 
+            this.btStone1.Enabled = false;
             this.btStone1.Location = new System.Drawing.Point(4, 4);
             this.btStone1.Name = "btStone1";
             this.btStone1.Size = new System.Drawing.Size(83, 47);
             this.btStone1.TabIndex = 0;
+            this.btStone1.Tag = "1";
             this.btStone1.Text = "Stone1";
             this.btStone1.UseVisualStyleBackColor = true;
+            this.btStone1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
             // lbStats
             // 
@@ -188,7 +213,7 @@
             this.lbStats.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbStats.Location = new System.Drawing.Point(634, 1);
             this.lbStats.Name = "lbStats";
-            this.lbStats.Size = new System.Drawing.Size(646, 53);
+            this.lbStats.Size = new System.Drawing.Size(567, 53);
             this.lbStats.TabIndex = 7;
             // 
             // menuStrip1
@@ -224,6 +249,7 @@
             this.changeNameToolStripMenuItem.Name = "changeNameToolStripMenuItem";
             this.changeNameToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.changeNameToolStripMenuItem.Text = "Change Name";
+            this.changeNameToolStripMenuItem.Click += new System.EventHandler(this.changeNameToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
@@ -239,6 +265,20 @@
             this.startGameToolStripMenuItem.Text = "Start Game";
             this.startGameToolStripMenuItem.Click += new System.EventHandler(this.startGameToolStripMenuItem_Click);
             // 
+            // btSubmit
+            // 
+            this.btSubmit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btSubmit.Enabled = false;
+            this.btSubmit.Location = new System.Drawing.Point(1208, 4);
+            this.btSubmit.Name = "btSubmit";
+            this.btSubmit.Size = new System.Drawing.Size(72, 47);
+            this.btSubmit.TabIndex = 8;
+            this.btSubmit.Text = "Done";
+            this.btSubmit.UseVisualStyleBackColor = true;
+            this.btSubmit.Click += new System.EventHandler(this.btSubmit_Click);
+            // 
             // Form_Board
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -249,6 +289,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "Form_Board";
             this.Text = "Form_Board";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Board_FormClosing);
             this.Load += new System.EventHandler(this.Form_Board_Load);
             this.tblHand.ResumeLayout(false);
             this.tblHand.PerformLayout();
@@ -277,5 +318,6 @@
         private System.Windows.Forms.ToolStripMenuItem changeNameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startGameToolStripMenuItem;
+        private System.Windows.Forms.Button btSubmit;
     }
 }

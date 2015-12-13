@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Net.Sockets;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -17,7 +17,8 @@ namespace ScrabbleServer
         private StreamWriter writer;
         private StreamReader reader;
         private Game game;
-        private int id;
+        public int id;
+        public Thread thread;
 
         public String name;
         private Hand hand;
@@ -34,6 +35,8 @@ namespace ScrabbleServer
             this.name = "Player" + id;
             new NetMessage<int>(NetCommand.s_Player_id, id, id).serializeTo(stream);
             hand = new Hand();
+            thread = new Thread(listenForCommands);
+            thread.Start();
         }
 
         #region Network Methods
@@ -47,19 +50,28 @@ namespace ScrabbleServer
             BinaryFormatter b = new BinaryFormatter();
             while (true)
             {
-                Object obj = b.Deserialize(stream);
-                if (typeof(NetMessage<int>) == obj.GetType())
+                try
                 {
-                    processIntMessage((NetMessage<int>) obj);
+                    Object obj = b.Deserialize(stream);
+                    if (typeof(NetMessage<int>) == obj.GetType())
+                    {
+                        processIntMessage((NetMessage<int>)obj);
+                    }
+                    else if (typeof(NetMessage<String>) == obj.GetType())
+                    {
+                        processStringMessage((NetMessage<String>)obj);
+                    }
+                    else if (typeof(NetMessage<Move>) == obj.GetType())
+                    {
+                        Log.log("Player " + this.id, "Received Move", 4);
+                        processMoveMessage((NetMessage<Move>)obj);
+                    }
                 }
-                else if (typeof(NetMessage<String>) == obj.GetType())
+                catch (IOException e)
                 {
-                    processStringMessage((NetMessage<String>)obj);
-                }
-                else if (typeof(NetMessage<Move>) == obj.GetType())
-                {
-                    Log.log("Player " + this.id, "Received Move", 4);
-                    processMoveMessage((NetMessage<Move>)obj);
+                    game.disconnectPlayer(this);
+                    Console.Out.WriteLine("Client " + id + " disconnected");
+                    break;
                 }
             }
         }

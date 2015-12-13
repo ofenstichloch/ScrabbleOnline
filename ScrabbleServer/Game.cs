@@ -38,6 +38,7 @@ namespace ScrabbleServer
             Log.log("Game"+this.id.ToString(),"Game created (" + Program.gameCount + ")",3);
             waitingForPlayers = this;
             blockStart = new Semaphore(0, 1);
+            waitForMove = new Semaphore(0, 1);
             Thread t = new Thread(this.gameLoop);
             this.thread = t;
             t.Start();
@@ -48,14 +49,36 @@ namespace ScrabbleServer
             Player newPlayer = new Player(client, playerCount, this);
             players[playerCount] = newPlayer;
             playerCount++;
-            Thread t = new Thread(newPlayer.listenForCommands);
-            t.Start();
             NetMessage<String> mess = new NetMessage<string>(NetCommand.s_Player_Connected,playerCount,newPlayer.name);
             informPlayers<String>(mess);
             if (playerCount == 4)
             {
                 Game.waitingForPlayers = null;
             }
+        }
+
+        internal void disconnectPlayer(Player p)
+        {
+            
+            if (p.id < playerCount - 1)
+            {
+                for (int i = p.id; i < playerCount - 1; i++)
+                {
+                    players[i] = players[i + 1];
+                }
+            }
+            players[playerCount - 1] = null;
+            playerCount--;
+            Log.log("Game " + id, "disconnecting. " + playerCount, 4);
+            if (playerCount == 0)
+            {
+                isFinished = true;
+            }
+            if (currentPlayer == p.id)
+            {
+                waitForMove.Release();
+            }
+            
         }
 
         internal void gameLoop()
@@ -70,16 +93,19 @@ namespace ScrabbleServer
                 //Wait for the move to be submitted
                 Log.log("Game" + id, "Waiting for Move " + currentPlayer, 4);
                 waitForMove.WaitOne();
-                sendBoard();
-                currentPlayer = (currentPlayer + 1) % playerCount;
-                //TODO Emptymves
-                if (emptyMovesCount == playerCount)
+                if (playerCount > 0)
                 {
-                    isFinished = true;
+                    sendBoard();
+                    currentPlayer = (currentPlayer + 1) % playerCount;
+                    //TODO Emptymves
+                    if (emptyMovesCount == playerCount)
+                    {
+                        isFinished = true;
+                    }
                 }
 
             }
-
+            Log.log("Game" + id, "finished",4);
         }
 
         internal void start()
@@ -109,7 +135,6 @@ namespace ScrabbleServer
                 NetMessage<int> mess = new NetMessage<int>(NetCommand.s_Game_Start, 0, 1);
                 informPlayers<int>(mess);
                 currentPlayer = 0;
-                waitForMove = new Semaphore(0, 1);
                 blockStart.Release();
  
             }

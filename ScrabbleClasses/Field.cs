@@ -47,6 +47,13 @@ namespace ScrabbleClasses
                 return null;
             }
         }
+
+        public Stone removeStone()
+        {
+            Stone s = stone;
+            stone = null;
+            return s;
+        }
     }
 
 }
