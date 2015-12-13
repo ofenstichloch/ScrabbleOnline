@@ -16,6 +16,7 @@ namespace ScrabbleServerTest
         private NetworkStream stream;
         private bool connected = false;
         private int id;
+        private int currentPlayer;
         public Client()
         {
             form= Form_Board.Create(this);
@@ -56,7 +57,7 @@ namespace ScrabbleServerTest
                         processMessage<Hand>((NetMessage<Hand>)obj);
                     }
                 }catch(InvalidOperationException e){
-
+                    Log.log("Board Form ", e.Message, 4);
                 }
                 }
             }
@@ -70,6 +71,16 @@ namespace ScrabbleServerTest
                 {
                     Object o = netMessage.payload;
                     this.id = (int) o;
+                }
+                else if (netMessage.commandType == NetCommand.s_Player_Turn)
+                {
+                    Object o = netMessage.payload;
+                    currentPlayer = (int)o;
+                    if (this.id == currentPlayer)
+                    {
+                        
+                        form.roundStart();
+                    }
                 }
             }
             else if (typeof(String) == typeof(T))
@@ -150,6 +161,11 @@ namespace ScrabbleServerTest
             new NetMessage<int>(NetCommand.c_Game_Start, 0, 0).serializeTo(stream);
         }
 
+        public bool move(Move m)
+        {
+            //TODO not imlemented
+            return false;
+        }
         public bool isConnected()
         {
             return connected;

@@ -16,6 +16,7 @@ namespace ScrabbleClasses
 
         private Field[,] board;
 
+
         public Board()
         {
             board = new Field[15,15];

@@ -16,9 +16,11 @@ namespace ScrabbleServerTest
         delegate void refreshBoardDelegate(Board b);
         delegate void refreshHandDelegate(Hand h);
         delegate void logDelegate(string s);
+        delegate void roundStartDelegate();
         private Client c;
         private Hand hand;
         private Board board;
+        private Field[] changed;
         static private Thread formThread;
 
         bool created = false;
@@ -45,7 +47,6 @@ namespace ScrabbleServerTest
         {
 
         }
-
 
         public void refreshHand(Hand h)
         {
@@ -74,10 +75,6 @@ namespace ScrabbleServerTest
             }
         }
 
-        /*
-         * TODO
-         * Refactor colors, add them to Field.Types
-         * */
         public void refreshBoard(Board b)
         {
             if (tblBoard.InvokeRequired)
@@ -182,6 +179,40 @@ namespace ScrabbleServerTest
             
         }
 
+        //On round end disable submit button, disable drag onto Board
+        private void roundEnd(){
+            btSubmit.Enabled = false;
+            foreach (Control c in tblBoard.Controls)
+            {
+                if (typeof(Label) == c.GetType())
+                {
+                    ((Label)c).AllowDrop = false;
+                }
+            }
+        }
+
+        public void roundStart()
+        {
+            if (btSubmit.InvokeRequired)
+            {
+                roundStartDelegate r = new roundStartDelegate(roundStart);
+                this.Invoke(r, new object[] { });
+            }
+            else
+            {
+                btSubmit.Enabled = true;
+                foreach (Control c in tblBoard.Controls)
+                {
+                    if (typeof(Label) == c.GetType())
+                    {
+                        ((Label)c).AllowDrop = true;
+                    }
+                }
+                changed = new Field[7];
+            }
+            
+        }
+
         internal void log(string p)
         {
             if (tblHand.InvokeRequired)
@@ -234,8 +265,17 @@ namespace ScrabbleServerTest
         {
             Stone s = (Stone)e.Data.GetData(typeof(Stone));
             TableLayoutPanelCellPosition pos = tblBoard.GetCellPosition((Label)sender);
+            if (changed[0] == null)
+            {
+                changed[0] = board.getField(pos.Column, pos.Row);
+            }
+            else
+            {
+                //TODO HELP allow stones only to build a word, save the word
+            }
             board.placeStone(pos.Column, pos.Row,s) ;
             hand.removeStone(s.letter);
+            
             refreshHand(hand);
             refreshBoard(board);
         }
@@ -262,9 +302,16 @@ namespace ScrabbleServerTest
             //Recognize word, start position and orientation
             int startx=0, starty=0, length = 0;
             bool horizontal;
-
+            Move m = null;
+            //TODO HELP recognize word
 
             //send to server
+            if (c.move(m))
+            {
+                //end the round
+                this.roundEnd();
+            }
+
         }
 
  
