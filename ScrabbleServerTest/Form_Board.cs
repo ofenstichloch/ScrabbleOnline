@@ -16,11 +16,11 @@ namespace ScrabbleServerTest
         delegate void refreshBoardDelegate(Board b);
         delegate void refreshHandDelegate(Hand h);
         delegate void logDelegate(string s);
-        delegate void roundStartDelegate();
+        delegate void roundControlDelegate();
         private Client c;
         private Hand hand;
         private Board board;
-        private Field[] changed;
+        private List<Field> changed;
         static private Thread formThread;
 
         bool created = false;
@@ -180,13 +180,22 @@ namespace ScrabbleServerTest
         }
 
         //On round end disable submit button, disable drag onto Board
-        private void roundEnd(){
-            btSubmit.Enabled = false;
-            foreach (Control c in tblBoard.Controls)
+        public void roundEnd(){
+            if (btSubmit.InvokeRequired)
             {
-                if (typeof(Label) == c.GetType())
+                roundControlDelegate r = new roundControlDelegate(roundEnd);
+                this.Invoke(r, new object[] { });
+            }
+            else
+            {
+                changed.Clear();
+                btSubmit.Enabled = false;
+                foreach (Control c in tblBoard.Controls)
                 {
-                    ((Label)c).AllowDrop = false;
+                    if (typeof(Label) == c.GetType())
+                    {
+                        ((Label)c).AllowDrop = false;
+                    }
                 }
             }
         }
@@ -195,7 +204,7 @@ namespace ScrabbleServerTest
         {
             if (btSubmit.InvokeRequired)
             {
-                roundStartDelegate r = new roundStartDelegate(roundStart);
+                roundControlDelegate r = new roundControlDelegate(roundStart);
                 this.Invoke(r, new object[] { });
             }
             else
@@ -208,7 +217,7 @@ namespace ScrabbleServerTest
                         ((Label)c).AllowDrop = true;
                     }
                 }
-                changed = new Field[7];
+                changed = new List<Field>(7);
             }
             
         }
@@ -222,7 +231,8 @@ namespace ScrabbleServerTest
             }
             else
             {
-                lbStats.Text += p + "\n\r";
+                lbStats.AppendText(p + "\r\n");
+                Console.Out.WriteLine(p);
             }
         }
 
@@ -265,17 +275,10 @@ namespace ScrabbleServerTest
         {
             Stone s = (Stone)e.Data.GetData(typeof(Stone));
             TableLayoutPanelCellPosition pos = tblBoard.GetCellPosition((Label)sender);
-            if (changed[0] == null)
-            {
-                changed[0] = board.getField(pos.Column, pos.Row);
-            }
-            else
-            {
-                //TODO HELP allow stones only to build a word, save the word
-            }
+            
             board.placeStone(pos.Column, pos.Row,s) ;
             hand.removeStone(s.letter);
-            
+            changed.Add(board.getField(pos.Column, pos.Row));
             refreshHand(hand);
             refreshBoard(board);
         }
@@ -287,6 +290,7 @@ namespace ScrabbleServerTest
             {
                 return;
             }
+            changed.Remove(board.getField(pos.Column, pos.Row));
             hand.addStones(new Stone[] {board.removeStone(pos.Column, pos.Row)});
             refreshHand(hand);
             refreshBoard(board);
@@ -299,19 +303,104 @@ namespace ScrabbleServerTest
 
         private void btSubmit_Click(object sender, EventArgs e)
         {
+            if (changed.Count == 0)
+            {
+                c.emptyMove();
+                return;
+            }
+
             //Recognize word, start position and orientation
             int startx=0, starty=0, length = 0;
             bool horizontal;
-            Move m = null;
-            //TODO HELP recognize word
-
-            //send to server
-            if (c.move(m))
+            Move m ;
+            changed.Sort();
+            length = changed.Count;
+            startx = changed[0].x;
+            starty = changed[0].y;
+            string word = "";
+            //get orientation
+            if (length == 1)
             {
-                //end the round
-                this.roundEnd();
+                horizontal =true;   
+            }else{
+                if (changed[0].x != changed[1].x)
+                {
+                    horizontal = true;
+                }
+                else
+                {
+                    horizontal = false;
+                }
             }
+            word += changed[0].getStone().letter;
+            //check for correct positioning and build word string
+            for (int i = 1; i < changed.Count; i++)
+            {
+                if ((horizontal && changed[i - 1].x < changed[i].x-1) 
+                    ||(!horizontal && (changed[i - 1].y < changed[i].y-1)) )
+                {
+                    int j = 0;
+                    if (horizontal) { j = changed[i].x - changed[i - 1].x; }
+                    else { j = changed[i].y - changed[i - 1].y; }
+                    for (int k = 1; k < j; k++)
+                    {
+                        if (horizontal)
+                        {
+                            if (board.getField(changed[i - 1].x + k, starty).getStone() != null)
+                            {
+                                word += board.getField(changed[i - 1].x + k, starty).getStone().letter;
+                            }
+                            else {
+                                log("Wrong placement!");
+                                resetChanges();
+                                return; 
+                            }
+                        }
+                        else
+                        {
+                            if (board.getField(startx,changed[i-1].y + k).getStone() != null)
+                            {
+                                word += board.getField(startx, changed[i - 1].y + k).getStone().letter;
+                            }
+                            else {
+                                log("Wrong placement!");
+                                resetChanges();
+                                return;
+                            }
+                        }
+                    }
+                    
+                }
+                word += changed[i].getStone().letter;               
+                if ((horizontal && changed[i].y != starty) || (!horizontal && changed[i].x != startx))
+                {
+                    log("Wrong placement!");
+                    //give back stones, clear board;
+                    resetChanges();
+                    return;
+                }
+                
+            }
+            log("Sending word: " + word);
+            m = new Move(1, word, new int[] { startx, starty }, horizontal);
+            //send to server
+            c.move(m);
+        }
 
+        private void resetChanges()
+        {
+            Stone[] stones = new Stone[changed.Count];
+            int i = 0;
+            foreach (Field f in changed)
+            {
+                stones[i] = f.getStone();
+                board.removeStone(f.x,f.y);
+                i++;
+            }
+            hand.addStones(stones);
+            refreshBoard(board);
+            refreshHand(hand);
+            changed.Clear();
         }
 
  

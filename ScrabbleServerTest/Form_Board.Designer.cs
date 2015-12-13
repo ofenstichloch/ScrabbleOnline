@@ -37,14 +37,14 @@
             this.btStone3 = new System.Windows.Forms.Button();
             this.btStone2 = new System.Windows.Forms.Button();
             this.btStone1 = new System.Windows.Forms.Button();
-            this.lbStats = new System.Windows.Forms.Label();
+            this.btSubmit = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btSubmit = new System.Windows.Forms.Button();
+            this.lbStats = new System.Windows.Forms.TextBox();
             this.tblHand.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -112,8 +112,8 @@
             this.tblHand.Controls.Add(this.btStone3, 2, 0);
             this.tblHand.Controls.Add(this.btStone2, 1, 0);
             this.tblHand.Controls.Add(this.btStone1, 0, 0);
-            this.tblHand.Controls.Add(this.lbStats, 7, 0);
             this.tblHand.Controls.Add(this.btSubmit, 8, 0);
+            this.tblHand.Controls.Add(this.lbStats, 7, 0);
             this.tblHand.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tblHand.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
             this.tblHand.Location = new System.Drawing.Point(0, 774);
@@ -207,14 +207,19 @@
             this.btStone1.UseVisualStyleBackColor = true;
             this.btStone1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btStone_MouseDown);
             // 
-            // lbStats
+            // btSubmit
             // 
-            this.lbStats.AutoSize = true;
-            this.lbStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbStats.Location = new System.Drawing.Point(634, 1);
-            this.lbStats.Name = "lbStats";
-            this.lbStats.Size = new System.Drawing.Size(567, 53);
-            this.lbStats.TabIndex = 7;
+            this.btSubmit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btSubmit.Enabled = false;
+            this.btSubmit.Location = new System.Drawing.Point(1208, 4);
+            this.btSubmit.Name = "btSubmit";
+            this.btSubmit.Size = new System.Drawing.Size(72, 47);
+            this.btSubmit.TabIndex = 8;
+            this.btSubmit.Text = "Done";
+            this.btSubmit.UseVisualStyleBackColor = true;
+            this.btSubmit.Click += new System.EventHandler(this.btSubmit_Click);
             // 
             // menuStrip1
             // 
@@ -265,19 +270,16 @@
             this.startGameToolStripMenuItem.Text = "Start Game";
             this.startGameToolStripMenuItem.Click += new System.EventHandler(this.startGameToolStripMenuItem_Click);
             // 
-            // btSubmit
+            // lbStats
             // 
-            this.btSubmit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btSubmit.Enabled = false;
-            this.btSubmit.Location = new System.Drawing.Point(1208, 4);
-            this.btSubmit.Name = "btSubmit";
-            this.btSubmit.Size = new System.Drawing.Size(72, 47);
-            this.btSubmit.TabIndex = 8;
-            this.btSubmit.Text = "Done";
-            this.btSubmit.UseVisualStyleBackColor = true;
-            this.btSubmit.Click += new System.EventHandler(this.btSubmit_Click);
+            this.lbStats.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbStats.Enabled = false;
+            this.lbStats.Location = new System.Drawing.Point(634, 4);
+            this.lbStats.Multiline = true;
+            this.lbStats.Name = "lbStats";
+            this.lbStats.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.lbStats.Size = new System.Drawing.Size(567, 47);
+            this.lbStats.TabIndex = 9;
             // 
             // Form_Board
             // 
@@ -311,7 +313,6 @@
         private System.Windows.Forms.Button btStone3;
         private System.Windows.Forms.Button btStone2;
         private System.Windows.Forms.Button btStone1;
-        private System.Windows.Forms.Label lbStats;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectToServerToolStripMenuItem;
@@ -319,5 +320,6 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startGameToolStripMenuItem;
         private System.Windows.Forms.Button btSubmit;
+        private System.Windows.Forms.TextBox lbStats;
     }
 }

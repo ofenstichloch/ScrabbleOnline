@@ -74,13 +74,18 @@ namespace ScrabbleServerTest
                 }
                 else if (netMessage.commandType == NetCommand.s_Player_Turn)
                 {
+                    
                     Object o = netMessage.payload;
                     currentPlayer = (int)o;
                     if (this.id == currentPlayer)
                     {
-                        
                         form.roundStart();
                     }
+                    else
+                    {
+                        form.roundEnd();
+                    }
+                    form.log("Turn for Player id " + currentPlayer);
                 }
             }
             else if (typeof(String) == typeof(T))
@@ -123,6 +128,7 @@ namespace ScrabbleServerTest
                 Object obj = netMessage.payload;
                 Board b = (Board)obj;
                 form.refreshBoard(b);
+                Console.Out.WriteLine("Received new Board");
                 //b.print();
             }
         }
@@ -161,10 +167,15 @@ namespace ScrabbleServerTest
             new NetMessage<int>(NetCommand.c_Game_Start, 0, 0).serializeTo(stream);
         }
 
-        public bool move(Move m)
+        public void move(Move m)
         {
-            //TODO not imlemented
-            return false;
+            new NetMessage<Move>(NetCommand.c_Move, id, m).serializeTo(stream);
+        }
+
+        public void emptyMove()
+        {
+            Move m = new Move(0, "", null, false);
+            new NetMessage<Move>(NetCommand.c_Move, id, m).serializeTo(stream);
         }
         public bool isConnected()
         {

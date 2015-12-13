@@ -106,6 +106,8 @@ namespace ScrabbleServer
 
             }
             Log.log("Game" + id, "finished",4);
+
+            //TODO Cleanup
         }
 
         internal void start()

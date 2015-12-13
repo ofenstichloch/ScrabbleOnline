@@ -142,16 +142,17 @@ namespace ScrabbleServer
             if (m.getType() == 0)
             {
                 game.emptyMovesCount++;
+                game.waitForMove.Release();
             }
             else if (m.getType() == 2)
             {
-                //TODO exchange Stone
                 if (m.getLength() > 2)
                 {
                     Log.log("Player " + this.id, "Cannot exchange more than 2 stones", 3);
                     return;
                 }
                 hand.exchangeStones(m.getWord(), game.bucket);
+                Log.log("Player " + this.id, "Processed empty Move, releasing game", 4);
                 drawStones(m.getLength());
             }
             else
@@ -161,7 +162,7 @@ namespace ScrabbleServer
                 {
                     String word = m.getWord();
 
-                    if (!board.checkWord(m.getLength(), m.getX(), m.getY(), m.isHorizontal()))
+                    if (!board.checkWord(m.getLength(), m.getX(), m.getY(), m.isHorizontal(),word))
                     {
                         Log.log("Player " + this.id, "Board blocked Move", 3);
                         //TODO Reply error to client
@@ -171,7 +172,7 @@ namespace ScrabbleServer
                     {
                         if (m.isHorizontal())
                         {
-                            Stone ret = board.placeStone(m.getX() , m.getY()+i, hand.removeStone(word[i]));
+                            Stone ret = board.placeStone(m.getX()+i , m.getY(), hand.removeStone(word[i]));
                             if (ret != null)
                             {
                                 Stone[] giveBack = new Stone[1];
@@ -181,7 +182,7 @@ namespace ScrabbleServer
                         }
                         else
                         {
-                            Stone ret = board.placeStone(m.getX()+i, m.getY(), hand.removeStone(word[i]));
+                            Stone ret = board.placeStone(m.getX(), m.getY()+i, hand.removeStone(word[i]));
                             if (ret != null)
                             {
                                 Stone[] giveBack = new Stone[1];

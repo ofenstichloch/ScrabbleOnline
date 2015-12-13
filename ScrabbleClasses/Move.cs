@@ -43,12 +43,12 @@ namespace ScrabbleClasses
 
         public int getX()
         {
-            return position[1];
+            return position[0];
         }
 
         public int getY()
         {
-            return position[0];
+            return position[1];
         }
 
 

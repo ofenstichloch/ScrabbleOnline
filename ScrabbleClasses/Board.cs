@@ -26,23 +26,23 @@ namespace ScrabbleClasses
                 {
                     if (tripleWord.Contains(i * 15 + j))
                     {
-                        board[i, j] = new Field(Field.Types.TripleWord);
+                        board[i, j] = new Field(Field.Types.TripleWord, i, j);
                     }
                     else if (doubleWord.Contains(i * 15 + j))
                     {
-                        board[i, j] = new Field(Field.Types.DoubleWord);
+                        board[i, j] = new Field(Field.Types.DoubleWord, i, j);
                     }
                     else if (tripleLetter.Contains(i * 15 + j))
                     {
-                        board[i, j] = new Field(Field.Types.TripleLetter);
+                        board[i, j] = new Field(Field.Types.TripleLetter, i, j);
                     }
                     else if (doubleLetter.Contains(i * 15 + j))
                     {
-                        board[i, j] = new Field(Field.Types.DoubleLetter);
+                        board[i, j] = new Field(Field.Types.DoubleLetter, i, j);
                     }
                     else
                     {
-                        board[i, j] = new Field(Field.Types.Normal);
+                        board[i, j] = new Field(Field.Types.Normal, i, j);
                     }
                 }   
             }
@@ -53,20 +53,20 @@ namespace ScrabbleClasses
             return board[x, y].placeStone(s);
         }
 
-        public bool checkWord(int length, int x, int y, bool horizontal)
+        public bool checkWord(int length, int x, int y, bool horizontal, string s)
         {
             for (int i = 0; i < length; i++)
             {
                 if (horizontal)
                 {
-                    if (board[x + i, y].getStone() != null && board[x + i, y].getStone().letter != ' ')
+                    if (board[x + i, y].getStone() != null && board[x + i, y].getStone().letter != ' ' && board[x+i,y].getStone().letter != s[i])
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    if (board[x, y+i].getStone() != null && board[x + i, y].getStone().letter != ' ')
+                    if (board[x, y + i].getStone() != null && board[x, y+i].getStone().letter != ' ' && board[x, y+i].getStone().letter != s[i])
                     {
                         return false;
                     }
@@ -111,10 +111,8 @@ namespace ScrabbleClasses
 
         public Field getField(int x, int y)
         {
-            Field f = board[x, y];
-            Field r = new Field(f.getType());
-            r.placeStone(f.getStone());
-            return r;
+      
+            return board[x,y];
         }
 
         public Stone removeStone(int x, int y)
