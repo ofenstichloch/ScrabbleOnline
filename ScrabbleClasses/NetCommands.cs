@@ -29,6 +29,7 @@ namespace ScrabbleClasses
         public static int s_Error_HandError = 2002;
         public static int s_Error_NotYourTurn = 2003;
         public static int s_Error_AlreadyStarted = 2004;
+        public static int s_Error_MoveError = 2005;
 
     }
 }

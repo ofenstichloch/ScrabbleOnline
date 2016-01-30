@@ -154,18 +154,78 @@ namespace ScrabbleServer
                 hand.exchangeStones(m.getWord(), game.bucket);
                 Log.log("Player " + this.id, "Processed empty Move, releasing game", 4);
                 drawStones(m.getLength());
+                return;
             }
             else
             {
-                //Apply move in game
+
+                // TODO: Rewrite so that it accepts words with already placed stones
+                //1. let the board check the string. Get a string with the letters that need to be placed as return
+                //2. check this string in hand
+
+                //Check Word
+                String word = m.getWord();
+                bool horizontal = m.isHorizontal();
+                int h = horizontal ? 1 : 0;
+                int v = horizontal ? 0 : 1;
+                int x = m.getX();
+                int y = m.getY();
+                String neededChars = board.checkWord(m.getLength(), x, y,horizontal, word);
+                if (neededChars != null && hand.hasWord(neededChars))
+                {
+                    Log.log("Player "+this.id, "Board and Hand acceppted Move",4);
+                    //If every stone is a new one:
+                    if (neededChars.Equals(word))
+                    {
+                        for (int i = 0; i < word.Length; i++)
+                        {
+                            board.placeStone(x+h*i,y+v*i,hand.removeStone(word[i]));
+                        }
+                    }
+                    // If there are only stones to be replaced
+                    else if (neededChars.Length == 0 && word.Length == 1)
+                    {
+                        hand.addStone(board.placeStone(x, y, hand.removeStone(word[0])));
+                    }
+                    // If some stones do not have to be placed
+                    else
+                    {
+                        int j = 0;
+                        for (int i = 0; i < word.Length; i++)
+                        {
+                            if (word[i] == neededChars[i-j])
+                            {
+                                Stone ret = board.placeStone(x + h * i, y + v * i, hand.removeStone(word[i]));
+                            }
+                            else
+                            {
+                                j++;
+                            }
+                            
+                        }
+                    }
+                }
+                else
+                {
+                    Log.log("SCHEISSE", "SCHIESSE", 4);
+                    informPlayer<String>(new NetMessage<String>(NetCommand.s_Error_MoveError, this.id, "False Move, Bord or Hand rejected."));
+                    return;
+                }
+                sendHand();
+                //Draw Stones and finish move
+                drawStones(7 - hand.getLength());
+                Log.log("Player " + this.id, "Processed Move, releasing game", 4);
+                game.waitForMove.Release();
+            
+                /*
                 if (hand.hasWord(m.getWord()))
                 {
-                    String word = m.getWord();
+                    
 
                     if (!board.checkWord(m.getLength(), m.getX(), m.getY(), m.isHorizontal(),word))
                     {
                         Log.log("Player " + this.id, "Board blocked Move", 3);
-                        //TODO Reply error to client
+                        // TODO Reply error to client
                         return;
                     }
                     for (int i = 0; i < m.getLength(); i++)
@@ -173,6 +233,7 @@ namespace ScrabbleServer
                         if (m.isHorizontal())
                         {
                             Stone ret = board.placeStone(m.getX()+i , m.getY(), hand.removeStone(word[i]));
+                            board.getField(m.getX() + i, m.getY()).locked = true;
                             if (ret != null)
                             {
                                 Stone[] giveBack = new Stone[1];
@@ -183,6 +244,7 @@ namespace ScrabbleServer
                         else
                         {
                             Stone ret = board.placeStone(m.getX(), m.getY()+i, hand.removeStone(word[i]));
+                            board.getField(m.getX(), m.getY()+i).locked = true;
                             if (ret != null)
                             {
                                 Stone[] giveBack = new Stone[1];
@@ -194,7 +256,9 @@ namespace ScrabbleServer
                     drawStones(7-hand.getLength());
                     Log.log("Player " + this.id, "Processed Move, releasing game", 4);
                     game.waitForMove.Release();
-                }
+
+                */
+               
             }
             
         }

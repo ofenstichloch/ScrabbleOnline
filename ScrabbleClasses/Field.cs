@@ -14,6 +14,7 @@ namespace ScrabbleClasses
         private Stone stone;
         public  readonly int x;
         public readonly int y;
+        public bool locked = false;
 
         public Field(Types type, int x, int y)
         {
@@ -44,6 +45,10 @@ namespace ScrabbleClasses
 
         public Stone placeStone(Stone s)
         {
+            if (s == null)
+            {
+                return null;
+            }
             if (stone == null)
             {
                 stone = s;
@@ -57,7 +62,7 @@ namespace ScrabbleClasses
             }
             else
             {
-                return null;
+                return s;
             }
         }
 

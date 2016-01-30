@@ -286,12 +286,12 @@ namespace ScrabbleServerTest
         private void tblBoad_Click(object sender, MouseEventArgs e)
         {
             TableLayoutPanelCellPosition pos = tblBoard.GetCellPosition((Label)sender);
-            if (board.getField(pos.Column, pos.Row).getStone() == null)
+            if (board.getField(pos.Column, pos.Row).getStone() == null || board.getField(pos.Column,pos.Row).locked)
             {
                 return;
             }
             changed.Remove(board.getField(pos.Column, pos.Row));
-            hand.addStones(new Stone[] {board.removeStone(pos.Column, pos.Row)});
+            hand.addStone(board.removeStone(pos.Column, pos.Row));
             refreshHand(hand);
             refreshBoard(board);
         }
@@ -308,7 +308,7 @@ namespace ScrabbleServerTest
                 c.emptyMove();
                 return;
             }
-
+            // TODO: Tidy this ugly thing up
             //Recognize word, start position and orientation
             int startx=0, starty=0, length = 0;
             bool horizontal;

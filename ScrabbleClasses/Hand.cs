@@ -22,6 +22,14 @@ namespace ScrabbleClasses
             }
         }
 
+        public void addStone(Stone s)
+        {
+            if (hand.Count < 7)
+            {
+                hand.Add(s);
+            }
+        }
+
         public Stone removeStone(char c)
         {
             Stone ret = hand.Find(delegate(Stone s){return s.letter == c;});
@@ -46,6 +54,10 @@ namespace ScrabbleClasses
          */
         public bool hasWord(String s)
         {
+            if (s.Length == 0)
+            {
+                return true;
+            }
             for (int i = 0; i < s.Length; i++)
             {
                 if(s.Count(x => x == s[i]) > hand.Count(x => x.letter == s[i])){

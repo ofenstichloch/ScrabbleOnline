@@ -53,26 +53,39 @@ namespace ScrabbleClasses
             return board[x, y].placeStone(s);
         }
 
-        public bool checkWord(int length, int x, int y, bool horizontal, string s)
+        public String checkWord(int length, int x, int y, bool horizontal, string s)
         {
+            String chars = "";
             for (int i = 0; i < length; i++)
             {
                 if (horizontal)
                 {
                     if (board[x + i, y].getStone() != null && board[x + i, y].getStone().letter != ' ' && board[x+i,y].getStone().letter != s[i])
                     {
-                        return false;
+                        return null;
+                    }
+                    else if (board[x + i, y].getStone() == null)
+                    {
+                        chars += s[i];
                     }
                 }
                 else
                 {
-                    if (board[x, y + i].getStone() != null && board[x, y+i].getStone().letter != ' ' && board[x, y+i].getStone().letter != s[i])
+                    if (board[x, y + i].getStone() != null && board[x, y + i].getStone().letter != ' ' && board[x, y + i].getStone().letter != s[i])
                     {
-                        return false;
+                        return null;
+                    }
+                    else if (board[x, y + i].getStone() == null)
+                    {
+                        chars += s[i];
                     }
                 }
             }
-            return true;
+            if (chars.Length == 0 && s.Length > 1)
+            {
+                return null;
+            }
+            return chars;
         }
         public NetMessage<Board> getMessage()
         {

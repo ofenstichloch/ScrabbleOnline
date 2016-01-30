@@ -97,7 +97,7 @@ namespace ScrabbleServer
                 {
                     sendBoard();
                     currentPlayer = (currentPlayer + 1) % playerCount;
-                    //TODO Emptymves
+                    // TODO: Emptymves
                     if (emptyMovesCount == playerCount)
                     {
                         isFinished = true;
@@ -107,7 +107,7 @@ namespace ScrabbleServer
             }
             Log.log("Game" + id, "finished",4);
 
-            //TODO Cleanup
+            // TODO: Cleanup
         }
 
         internal void start()
