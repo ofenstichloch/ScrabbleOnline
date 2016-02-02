@@ -38,6 +38,7 @@ namespace ScrabbleServerTest
         {
             Form_Board f = new Form_Board();
             f.c = c;
+            f.changed = new List<Field>();
             Form_Board.formThread = new Thread(Main);
             Form_Board.formThread.SetApartmentState(ApartmentState.STA);
             Form_Board.formThread.Start(f);

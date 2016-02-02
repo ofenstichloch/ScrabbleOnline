@@ -207,7 +207,6 @@ namespace ScrabbleServer
                 }
                 else
                 {
-                    Log.log("SCHEISSE", "SCHIESSE", 4);
                     informPlayer<String>(new NetMessage<String>(NetCommand.s_Error_MoveError, this.id, "False Move, Bord or Hand rejected."));
                     return;
                 }
@@ -217,47 +216,7 @@ namespace ScrabbleServer
                 Log.log("Player " + this.id, "Processed Move, releasing game", 4);
                 game.waitForMove.Release();
             
-                /*
-                if (hand.hasWord(m.getWord()))
-                {
-                    
-
-                    if (!board.checkWord(m.getLength(), m.getX(), m.getY(), m.isHorizontal(),word))
-                    {
-                        Log.log("Player " + this.id, "Board blocked Move", 3);
-                        // TODO Reply error to client
-                        return;
-                    }
-                    for (int i = 0; i < m.getLength(); i++)
-                    {
-                        if (m.isHorizontal())
-                        {
-                            Stone ret = board.placeStone(m.getX()+i , m.getY(), hand.removeStone(word[i]));
-                            board.getField(m.getX() + i, m.getY()).locked = true;
-                            if (ret != null)
-                            {
-                                Stone[] giveBack = new Stone[1];
-                                giveBack[0] = ret;
-                                hand.addStones(giveBack);
-                            }
-                        }
-                        else
-                        {
-                            Stone ret = board.placeStone(m.getX(), m.getY()+i, hand.removeStone(word[i]));
-                            board.getField(m.getX(), m.getY()+i).locked = true;
-                            if (ret != null)
-                            {
-                                Stone[] giveBack = new Stone[1];
-                                giveBack[0] = ret;
-                                hand.addStones(giveBack);
-                            }
-                        }
-                    }
-                    drawStones(7-hand.getLength());
-                    Log.log("Player " + this.id, "Processed Move, releasing game", 4);
-                    game.waitForMove.Release();
-
-                */
+              
                
             }
             
